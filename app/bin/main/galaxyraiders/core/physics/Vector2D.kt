@@ -63,5 +63,5 @@ data class Vector2D(val dx: Double, val dy: Double) {
 }
 
 operator fun Double.times(v: Vector2D): Vector2D {
-  return INVALID_VECTOR
+  return Vector2D(2*v.dx, 2*v.dy)
 }
