@@ -15,9 +15,13 @@ data class Vector2D(val dx: Double, val dy: Double) {
   val radiant: Double
     get() {
       val tg = this.dy / this.dx
-      val result = Math.atan(tg) - Math.PI
-      if (this.dx > 0) result = Math.atan(tg)
-      if (this.dy > 0) result = Math.atan(tg) + Math.PI
+      val result = when (this.dx > 0) {
+        true -> Math.atan(tg)
+        else -> when (this.dy > 0) {
+          true -> Math.atan(tg) + Math.PI
+          else -> Math.atan(tg) - Math.PI
+        }
+      }
       return result
     }
 
