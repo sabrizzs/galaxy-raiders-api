@@ -17,8 +17,7 @@ object GameEngineConfig {
   val spaceFieldHeight = config.get<Int>("SPACEFIELD_HEIGHT")
   val asteroidProbability = config.get<Double>("ASTEROID_PROBABILITY")
   val coefficientRestitution = config.get<Double>("COEFFICIENT_RESTITUTION")
-  val leaderboardJson = File("./src/main/kotlin/galaxyraiders/core/score/Leaderboard.json") //2.2
-  val scoreboardJson = File("./src/main/kotlin/galaxyraiders/core/score/Scoreboard.json")  //2.2
+
   val msPerFrame: Int = MILLISECONDS_PER_SECOND / this.frameRate
 }
 
