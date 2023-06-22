@@ -13,9 +13,9 @@ class Explosion(
   radius: Double,
   mass: Double
 ) : SpaceObject("Explosion", '*', initialPosition, initialVelocity, radius, mass) {
-  
+
   var isTriggered: Boolean = true
-  
+
   private var timer: Timer = Timer()
 
   init {
