@@ -94,6 +94,12 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
     }
   }
 
+  fun trimExplosions() {
+    this.explosions = this.explosions.filter {
+      it.desapeareExplosion()
+    }
+  }
+
   private fun initializeShip(): SpaceShip {
     return SpaceShip(
       initialPosition = standardShipPosition(),
