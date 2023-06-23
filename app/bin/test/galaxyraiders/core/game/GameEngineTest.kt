@@ -140,6 +140,9 @@ class GameEngineTest {
     val missile = hardGame.field.missiles[0]
     val expectedMissilePosition = missile.center + missile.velocity
 
+    val explosion = hardGame.field.explosions[0]
+    val expectedExplosionPosition = explosion.center + explosion.velocity
+
     hardGame.moveSpaceObjects()
 
     assertAll(
@@ -147,6 +150,7 @@ class GameEngineTest {
       { assertEquals(expectedShipPosition, ship.center) },
       { assertEquals(expectedAsteroidPosition, asteroid.center) },
       { assertEquals(expectedMissilePosition, missile.center) },
+      { assertEquals(expectedExplosionPosition, explosion.center) },
     )
   }
 
@@ -154,6 +158,7 @@ class GameEngineTest {
   fun `it can trim its space objects`() {
     hardGame.field.generateAsteroid()
     hardGame.field.generateMissile()
+    hardGame.field.generateExplosion()
 
     val missile = hardGame.field.missiles.last()
     val missileDistanceToTopBorder =
@@ -169,9 +174,17 @@ class GameEngineTest {
       asteroidDistanceToBottomBorder / Math.abs(asteroid.velocity.dy)
     ).toInt()
 
+    val explosion = hardGame.field.explosions.last()
+    val explosionDistanceToBottomBorder =
+      explosion.center.y - hardGame.field.boundaryY.start
+    val repetitionsToGetExplosionOutsideOfSpaceField = Math.ceil(
+      explosionDistanceToBottomBorder / Math.abs(explosion.velocity.dy)
+    ).toInt()
+
     val repetitionsToGetSpaceObjectsOutOfSpaceField = Math.max(
       repetitionsToGetMissileOutOfSpaceField,
       repetitionsToGetAsteroidOutsideOfSpaceField,
+      repetitionsToGetExplosionOutsideOfSpaceField,
     )
 
     repeat(repetitionsToGetSpaceObjectsOutOfSpaceField) {
@@ -184,6 +197,7 @@ class GameEngineTest {
       "GameEngine should trim all space objects",
       { assertEquals(-1, hardGame.field.missiles.indexOf(missile)) },
       { assertEquals(-1, hardGame.field.asteroids.indexOf(asteroid)) },
+      { assertEquals(-1, hardGame.field.explosions.indexOf(explosion)) },
     )
   }
 
