@@ -10,7 +10,7 @@ data class Vector2D(val dx: Double, val dy: Double) {
   }
 
   val magnitude: Double
-    get() = Math.sqrt(this.dx*this.dx+this.dy*this.dy)
+    get() = Math.sqrt(this.dx * this.dx + this.dy * this.dy)
 
   val radiant: Double
     get() {
@@ -29,17 +29,17 @@ data class Vector2D(val dx: Double, val dy: Double) {
     get() = Math.toDegrees(this.radiant)
 
   val unit: Vector2D
-    get() = this/this.magnitude
+    get() = this / this.magnitude
 
   val normal: Vector2D
     get() = Vector2D(this.dy, -this.dx).unit
 
   operator fun times(scalar: Double): Vector2D {
-    return Vector2D(dx*scalar, dy*scalar)
+    return Vector2D(dx * scalar, dy * scalar)
   }
 
   operator fun div(scalar: Double): Vector2D {
-    return Vector2D(dx/scalar, dy/scalar)
+    return Vector2D(dx / scalar, dy / scalar)
   }
 
   operator fun times(v: Vector2D): Double {
@@ -63,7 +63,7 @@ data class Vector2D(val dx: Double, val dy: Double) {
   }
 
   fun scalarProject(target: Vector2D): Double {
-    return (target * this)/target.magnitude
+    return (target * this) / target.magnitude
   }
 
   fun vectorProject(target: Vector2D): Vector2D {
