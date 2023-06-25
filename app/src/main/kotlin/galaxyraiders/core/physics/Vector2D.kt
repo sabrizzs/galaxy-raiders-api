@@ -13,7 +13,17 @@ data class Vector2D(val dx: Double, val dy: Double) {
     get() = Math.sqrt(this.dx*this.dx+this.dy*this.dy)
 
   val radiant: Double
-    get() = angle_radiant(this)
+    get() {
+      val tg = this.dy / this.dx
+      val result = when (this.dx > 0) {
+        true -> Math.atan(tg)
+        else -> when (this.dy > 0) {
+          true -> Math.atan(tg) + Math.PI
+          else -> Math.atan(tg) - Math.PI
+        }
+      }
+      return result
+    }
 
   val degree: Double
     get() = Math.toDegrees(this.radiant)
@@ -23,13 +33,6 @@ data class Vector2D(val dx: Double, val dy: Double) {
 
   val normal: Vector2D
     get() = Vector2D(this.dy, -this.dx).unit
-
-  fun angle_radiant(v: Vector2D): Double {
-    val tg = v.dy/v.dx
-    if (v.dx > 0) return Math.atan(tg)
-    if(v.dy > 0) return Math.atan(tg) + Math.PI
-    return  Math.atan(tg) - Math.PI
-  }
 
   operator fun times(scalar: Double): Vector2D {
     return Vector2D(dx*scalar, dy*scalar)
