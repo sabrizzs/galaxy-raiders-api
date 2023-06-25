@@ -1,24 +1,23 @@
 package galaxyraiders.core.game
 
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.ObjectMapper
 import galaxyraiders.Config
+import galaxyraiders.core.score.Score
 import galaxyraiders.ports.RandomGenerator
 import galaxyraiders.ports.ui.Controller
 import galaxyraiders.ports.ui.Controller.PlayerCommand
 import galaxyraiders.ports.ui.Visualizer
-import kotlin.system.measureTimeMillis
-
-//2.2
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.ObjectMapper
-import galaxyraiders.core.score.Score
 import java.io.File
-//import java.util.*
+import java.util.*
+import kotlin.system.measureTimeMillis
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import java.time.LocalDate
 import java.util.Date
 
 const val MILLISECONDS_PER_SECOND: Int = 1000
+const val MAX_LEADERBOARD: Int = 3
 
 object GameEngineConfig {
   private val config = Config(prefix = "GR__CORE__GAME__GAME_ENGINE__")
@@ -44,10 +43,10 @@ class GameEngine(
   )
 
   var playing = true
-	
+
   var mapper = ObjectMapper()
   var newPlayer = true
-	
+
   fun execute() {
     while (true) {
       val duration = measureTimeMillis { this.tick() }
@@ -95,43 +94,48 @@ class GameEngine(
     this.moveSpaceObjects()
     this.trimSpaceObjects()
     this.generateAsteroids()
-    this.updateScoreBoard() //2.2
-    this.updateLeaderboard() //2.2
+    this.updateScoreBoard()
+    this.updateLeaderboard()
   }
-  
-  //2.2
+
   fun updateLeaderboard() {
     val scoreboardFile = File("./src/main/kotlin/galaxyraiders/core/score/Scoreboard.json")
     val leaderboardFile = File("./src/main/kotlin/galaxyraiders/core/score/Leaderboard.json")
-    
-    var scoreList: MutableList<Score> = mapper.readValue(scoreboardFile, mapper.typeFactory.constructCollectionType(MutableList::class.java, Score::class.java))
-    
-    scoreList.sortByDescending{it.score}
 
-    val leaderboardList: List<Score> = if(scoreList.size > 3){
-        scoreList.take(3)
-    }else{
-        scoreList
+    var scoreList: MutableList<Score> = mapper.readValue(
+      scoreboardFile,
+      mapper.typeFactory.constructCollectionType(MutableList::class.java, Score::class.java)
+    )
+
+    scoreList.sortByDescending { it.score }
+
+    val leaderboardList: List<Score> = if (scoreList.size > MAX_LEADERBOARD) {
+      scoreList.take(MAX_LEADERBOARD)
+    } else {
+      scoreList
     }
     mapper.writeValue(leaderboardFile, leaderboardList)
   }
 
-  //2.2
   fun updateScoreBoard() {
     val scoreboardFile = File("./src/main/kotlin/galaxyraiders/core/score/Scoreboard.json")
-    
-    var scoreList: MutableList<Score> = mapper.readValue(scoreboardFile, mapper.typeFactory.constructCollectionType(MutableList::class.java, Score::class.java))
 
-    if(newPlayer){
+    var scoreList: MutableList<Score> = mapper.readValue(
+      scoreboardFile,
+      mapper.typeFactory.constructCollectionType(MutableList::class.java, Score::class.java)
+    )
+
+    if (newPlayer) {
       val currentScore = Score(Date(), this.field.score, this.field.explodedAsteroids)
       scoreList.add(currentScore)
       newPlayer = false
-    }else{
+    } else {
       val lastScore = scoreList.last()
-        lastScore.apply {
-            score = field.score
-            asteroidsDestroyed = field.explodedAsteroids + 1
-        }
+      lastScore.apply {
+        score = field.score
+        asteroidsDestroyed = field.explodedAsteroids + 1
+      }
+
     }
     mapper.writeValue(scoreboardFile, scoreList)
   }

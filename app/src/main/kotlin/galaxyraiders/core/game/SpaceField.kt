@@ -4,7 +4,6 @@ import galaxyraiders.Config
 import galaxyraiders.core.physics.Point2D
 import galaxyraiders.core.physics.Vector2D
 import galaxyraiders.ports.RandomGenerator
-
 import kotlin.math.PI
 import kotlin.math.pow
 
@@ -32,10 +31,9 @@ object SpaceFieldConfig {
 data class SpaceField(val width: Int, val height: Int, val generator: RandomGenerator) {
   val boundaryX = 0.0..width.toDouble()
   val boundaryY = 0.0..height.toDouble()
-  
-  var score: Double = 0.0 //2.2
-  var explodedAsteroids: Int = 0 //2.2
 
+  var score: Double = 0.0
+  var explodedAsteroids: Int = 0
 
   val ship = initializeShip()
 
@@ -71,7 +69,6 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
     this.asteroids += this.createAsteroidWithRandomProperties()
   }
 
-  //2.2
   fun updateScore(asteroid: Asteroid) {
     val area: Double = PI * asteroid.radius.pow(2)
     val scoreIncrease = area * asteroid.mass
@@ -80,9 +77,9 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
 
   fun generateExplosion(missile: Missile, asteroid: Asteroid) {
     this.explosions += this.createExplosion(missile)
+    updateScore(asteroid)
     deleteMissile(missile)
     deleteAsteroid(asteroid)
-    updateScore(asteroid) //2.2
   }
 
   fun deleteMissile(missile: Missile) {
@@ -131,7 +128,7 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
   private fun standardShipVelocity(): Vector2D {
     return Vector2D(dx = 0.0, dy = 0.0)
   }
-		
+
   private fun createMissile(): Missile {
     return Missile(
       initialPosition = defineMissilePosition(SpaceFieldConfig.missileRadius),
